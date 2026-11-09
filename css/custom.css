@@ -1,18 +1,52 @@
-/* Bootstrap задаёт сетку, компоненты, отступы и адаптивность. */
-body { font-family: Arial, Helvetica, sans-serif; }
+/* Bootstrap остаётся основой сетки, компонентов и адаптивности. */
+:root { --bs-body-font-family: Arial, Helvetica, sans-serif; --bs-body-color: #263b31; --bs-body-bg: #fafaf6; --bs-border-color: #e0e5da; --bs-primary-rgb: 47,81,109; --bs-success-rgb: 43,91,66; --bs-success-bg-subtle: #eaf0e5; --bs-warning-bg-subtle: #f6eddb; --bs-info-bg-subtle: #e5eff1; --bs-link-color: #2b5b42; --bs-link-color-rgb: 43,91,66; --bs-link-hover-color: #193c29; --bs-link-hover-color-rgb: 25,60,41; --bs-border-radius: .9rem; --bs-border-radius-lg: 1.15rem; }
+body { line-height: 1.65; }
+h1,h2,h3 { letter-spacing: -.035em; line-height: 1.16; }
+h2 { font-weight: 700; } h3 { font-weight: 650; }
+.display-4 { font-size: clamp(2.65rem,4.8vw,4.65rem); letter-spacing: -.055em; }
+.display-5 { font-size: clamp(2.3rem,4vw,3.65rem); }
 :focus-visible { outline: 3px solid #b45309 !important; outline-offset: 4px; }
-.hero-image { height: 440px; object-fit: cover; border-radius: 9rem 9rem 1.5rem 1.5rem; }
-.card-img-top { height: 240px; object-fit: cover; }
+.brand-caption { font-size: .54rem; letter-spacing: .11em; margin-top: 4px; }
+.navbar-brand { font-size: 1.4rem; letter-spacing: -.05em; }
+.navbar .nav-link { font-size: .86rem; color: #5b685e; padding: .65rem 1rem !important; border-radius: 2rem; }
+.navbar .nav-link.active { color: #27543c; background: #edf2e7; font-weight: 700; }
+.navbar .nav-link:hover { color: #1c4932; background: #f2f5ed; }
+.btn { font-weight: 600; border-radius: 2rem; padding: .7rem 1.2rem; font-size: .88rem; }
+.btn-lg { padding: .9rem 1.5rem; font-size: .94rem; }
+.btn-primary { --bs-btn-bg: #2c5b43; --bs-btn-border-color: #2c5b43; --bs-btn-hover-bg: #204631; --bs-btn-hover-border-color: #204631; --bs-btn-active-bg: #183b29; --bs-btn-active-border-color: #183b29; }
+.btn-outline-primary,.btn-outline-success { --bs-btn-color: #2c5b43; --bs-btn-border-color: #aabda9; --bs-btn-hover-bg: #2c5b43; --bs-btn-hover-border-color: #2c5b43; --bs-btn-active-bg: #2c5b43; --bs-btn-active-border-color: #2c5b43; }
+.hero-surface { background: #f1f3e9; }
+.hero-description { font-size: 1.06rem; line-height: 1.85; }
+.eyebrow { font-size: .67rem !important; letter-spacing: .13em; color: #687c57; }
+.hero-image { height: 510px; object-fit: cover; border-radius: 11rem 11rem 2rem 2rem; object-position: center 53%; }
+.hero-note { bottom: 20px; left: -18px; transform: rotate(-3deg); }
+.hero-sticker { width: 112px; height: 112px; top: 7px; right: -9px; transform: rotate(12deg); font-size: .8rem; line-height: 1.4; border: 6px solid #f1f3e9; }
+.section-space { margin-top: 72px; margin-bottom: 72px; }
+.card { border-color: #e0e5da; border-radius: 1.2rem; overflow: hidden; }
+.card-body { padding: 1.6rem; }
+.pet-card { transition: transform .2s, box-shadow .2s; }
+.pet-card:hover { transform: translateY(-5px); box-shadow: 0 14px 30px #283e3010 !important; }
+.card-img-top { height: 275px; object-fit: cover; }
+.card-text { color: #667366; font-size: .92rem; }
+.card .badge { font-weight: 500; font-size: .65rem; padding: .55em .85em; }
 .pet-detail-image { height: 480px; object-fit: cover; }
 .shelter-map { width: 100%; height: 340px; border: 0; }
+.form-control,.form-select { padding: .8rem 1rem; border-color: #d8dfd2; }
+.form-control:focus,.form-select:focus { border-color: #87a78b; box-shadow: 0 0 0 .2rem #3b77501a; }
+.form-label { font-size: .85rem; font-weight: 600; }
+.input-group-text { border-color: #d8dfd2; background: #f1f4ec; }
+.alert { font-size: .88rem; border-radius: 1rem; }
+.accordion { --bs-accordion-border-color: #dfe4d6; --bs-accordion-active-bg: #edf2e7; --bs-accordion-active-color: #27543c; --bs-accordion-btn-focus-box-shadow: 0 0 0 .2rem #3b77501a; }
+.accordion-button { font-weight: 600; padding: 1.3rem; }
 .studium-mark { width: 52px; height: 52px; flex-shrink: 0; }
+.site-footer.bg-dark { background: #243c30 !important; padding-bottom: 90px !important; }
+.site-footer a { text-underline-offset: 4px; }
 .back-top { position: fixed; bottom: 20px; right: 20px; z-index: 1020; }
-footer { padding-bottom: 90px !important; }
-.news-surface { background: #f2edf5; }
+.news-surface { background: #f3eff5; }
 .news-feature-image { width: 100%; height: 100%; min-height: 320px; max-height: 440px; object-fit: cover; }
 [hidden] { display: none !important; }
-@media (max-width: 575.98px) {
-  .hero-image { height: 320px; }
-  .pet-detail-image { height: 340px; }
-  .back-top { bottom: 12px; right: 12px; font-size: .8rem; }
-}
+@media (max-width: 991.98px) { .hero-note { left: 15px; } .hero-image { height: 460px; } .navbar-nav { padding-top: 1rem; } }
+@media (max-width: 575.98px) { .hero-image { height: 370px; } .hero-sticker { right: 0; width: 95px; height: 95px; } .hero-note { left: 10px; right: 10px; bottom: 14px; transform: none; } .brand-caption { font-size: .48rem; } .pet-detail-image { height: 340px; } .back-top { bottom: 12px; right: 12px; font-size: .8rem; } .section-space { margin-top: 48px; margin-bottom: 48px; } .card-body { padding: 1.25rem; } }
+@media (prefers-reduced-motion: reduce) { .pet-card { transition: none; } .pet-card:hover { transform: none; } }
+
+@media (max-width: 575.98px) { .hero-surface .display-4 { font-size: 2.3rem; } .hero-description { font-size: 1rem; line-height: 1.7; } .hero-description br { display: none; } .hero-surface .btn-lg { font-size: .8rem; padding: .8rem 1rem; } }
