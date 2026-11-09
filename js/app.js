@@ -101,6 +101,22 @@ if (adoptForm) {
 
 const quickModal = document.getElementById("orderModal");
 if (quickModal) {
+  // Не выпускаем Tab в интерфейс браузера с крайних элементов окна.
+  quickModal.addEventListener("keydown", event => {
+    if (event.key !== "Tab") return;
+    const elements = [...quickModal.querySelectorAll(
+      'a[href],button:not([disabled]),input:not([disabled]):not([type="hidden"]),select:not([disabled]),textarea:not([disabled])'
+    )].filter(element => element.getClientRects().length > 0);
+    const first = elements[0];
+    const last = elements[elements.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  });
   quickModal.addEventListener("show.bs.modal", event => {
     const id = event.relatedTarget?.dataset.petId || "1";
     const pet = shelterPets.find(item => String(item.id) === id) || shelterPets[0];
