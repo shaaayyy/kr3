@@ -1,0 +1,18 @@
+/* Bootstrap задаёт сетку, компоненты, отступы и адаптивность. */
+body { font-family: Arial, Helvetica, sans-serif; }
+:focus-visible { outline: 3px solid #b45309 !important; outline-offset: 4px; }
+.hero-image { height: 440px; object-fit: cover; border-radius: 9rem 9rem 1.5rem 1.5rem; }
+.card-img-top { height: 240px; object-fit: cover; }
+.pet-detail-image { height: 480px; object-fit: cover; }
+.shelter-map { width: 100%; height: 340px; border: 0; }
+.studium-mark { width: 52px; height: 52px; flex-shrink: 0; }
+.back-top { position: fixed; bottom: 20px; right: 20px; z-index: 1020; }
+footer { padding-bottom: 90px !important; }
+.news-surface { background: #f2edf5; }
+.news-feature-image { width: 100%; height: 100%; min-height: 320px; max-height: 440px; object-fit: cover; }
+[hidden] { display: none !important; }
+@media (max-width: 575.98px) {
+  .hero-image { height: 320px; }
+  .pet-detail-image { height: 340px; }
+  .back-top { bottom: 12px; right: 12px; font-size: .8rem; }
+}
