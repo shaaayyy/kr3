@@ -25,7 +25,7 @@ h2 { font-weight: 700; } h3 { font-weight: 650; }
 .card { border-color: #e2e6db; border-radius: 1.2rem; overflow: hidden; }
 .card-body { padding: 1.6rem; }
 .pet-card { transition: transform .2s, box-shadow .2s; }
-.pet-card:hover { transform: translateY(-5px); box-shadow: 0 14px 30px #283e3010 !important; }
+.pet-card:hover { transform: translateY(-3px); box-shadow: 0 14px 30px #283e3010 !important; }
 .card-img-top { height: 275px; object-fit: cover; }
 .card-text { color: #667366; font-size: .92rem; }
 .card .badge { font-weight: 500; font-size: .65rem; padding: .55em .85em; }
@@ -59,3 +59,18 @@ html { scroll-padding-top: 155px; }
 .paw-top:hover,.paw-top:active { background: #e0ead8; color: #294633; border-color: #b5c6ae; }
 .paw-top svg { transform: rotate(-12deg); }
 @media (max-width: 575.98px) { html { scroll-padding-top: 150px; } .paw-top { width: 54px; height: 54px; } }
+
+.brand-paw { display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; flex-shrink: 0; border: 1px solid #d1dccd; border-radius: 50%; background: #eef3e7; color: #466b57; }
+.brand-paw svg { transform: rotate(-12deg); }
+@media (prefers-reduced-motion: no-preference) {
+  main > :first-child { animation: welcome-in .45s ease-out both; }
+  .btn { transition: background-color .2s, border-color .2s, color .2s, box-shadow .2s, transform .2s; }
+  .brand-paw,.paw-top svg { transition: transform .25s ease; }
+  @media (hover: hover) and (pointer: fine) {
+    .btn:hover { transform: translateY(-2px); }
+    .navbar-brand:hover .brand-paw { transform: scale(1.04); }
+    .paw-top:hover svg { transform: rotate(-5deg); }
+  }
+}
+@keyframes welcome-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) { .btn,.brand-paw,.paw-top svg { transition: none !important; } main > :first-child { animation: none; } }
