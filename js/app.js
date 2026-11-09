@@ -85,7 +85,7 @@ if (adoptForm) {
     const data = new FormData(adoptForm);
     const pet = shelterPets.find(item => String(item.id) === data.get("pet"));
     const text = "АНКЕТА БУДУЩЕГО ХОЗЯИНА — ТЁПЛЫЙ ДОМ\n"
-      + "Учебный документ. Анкета не отправлена в приют.\n\n"
+      + "Скачанная анкета. Передайте её куратору приюта.\n\n"
       + "Имя: " + data.get("name") + "\nEmail: " + data.get("email")
       + "\nТелефон: +7 " + data.get("phone") + "\nПитомец: " + (pet ? pet.name : "Помогите выбрать")
       + "\nУсловия проживания: " + data.get("home") + "\nО себе: " + data.get("about")
@@ -133,7 +133,7 @@ if (quickModal) {
     const form = event.currentTarget;
     if (!form.reportValidity()) return;
     const data = new FormData(form);
-    downloadApplication("ЗАЯВКА НА ЗНАКОМСТВО — ТЁПЛЫЙ ДОМ\nУчебный документ. Не отправлен в приют.\n\n"
+    downloadApplication("ЗАЯВКА НА ЗНАКОМСТВО — ТЁПЛЫЙ ДОМ\nСкачанная заявка. Передайте её куратору приюта.\n\n"
       + "Питомец: " + data.get("pet") + "\nИмя: " + data.get("name") + "\nТелефон: " + data.get("phone")
       + "\nСовершеннолетие и согласие на локальную обработку данных подтверждены.\n", "znakomstvo-teply-dom.txt");
     showMessage("quick-result", "Заявка подготовлена для скачивания. Она не отправлена в приют.");
@@ -162,7 +162,7 @@ if (donation) {
     event.preventDefault();
     if (!donation.reportValidity()) return;
     showMessage("donate-result", "Спасибо за желание помочь на " + Number(amount.value).toLocaleString("ru-RU")
-      + " ₽! Это демонстрация: пожертвование не совершено. Для реальной помощи свяжитесь с приютом.");
+      + " ₽. Для перевода свяжитесь с приютом и уточните реквизиты. Деньги не списаны.");
   });
 }
 
@@ -187,7 +187,3 @@ document.querySelectorAll("[data-back-top]").forEach(button => button.addEventLi
   window.scrollTo({ top: 0, behavior: reducedMotion ? "instant" : "smooth" });
   document.getElementById("page-top").focus({ preventScroll: true });
 }));
-const floatingTop = document.getElementById("floating-top");
-function updateTopButton() { if (floatingTop) floatingTop.hidden = window.scrollY < 350; }
-window.addEventListener("scroll", updateTopButton, { passive: true });
-updateTopButton();
