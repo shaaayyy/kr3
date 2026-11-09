@@ -46,7 +46,7 @@
 
 - Репозиторий: https://github.com/shaaayyy/kr3
 - Практическая №9: https://github.com/shaaayyy/kr3/pull/1 — объединена с main.
-- Практическая №10 оформляется отдельной веткой `feature/bootstrap-components` и Pull Request; актуальный статус доступен в разделе Pull requests репозитория.
+- Практическая №10: https://github.com/shaaayyy/kr3/pull/2 — ветка `feature/bootstrap-components`. Актуальный статус объединения доступен по ссылке Pull Request.
 
 ## Границы проверки
 

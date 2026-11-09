@@ -107,3 +107,8 @@ Backend по практической №10 не требуется. Формы 
 ## Технологии
 
 HTML5, Bootstrap 5.3.8, CSS, JavaScript, Git и GitHub. Системные шрифты Arial/Helvetica. React, Vue, Sass и серверные фреймворки не используются.
+
+## История выполнения
+
+- [Практическая №9 — Bootstrap-сетка, PR #1](https://github.com/shaaayyy/kr3/pull/1).
+- [Практическая №10 — Bootstrap-компоненты, PR #2](https://github.com/shaaayyy/kr3/pull/2).
