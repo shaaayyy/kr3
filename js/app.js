@@ -18,16 +18,31 @@ function downloadApplication(text, filename) {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
+function applicationMailLink(subject, text) {
+  return "mailto:hello@teply-dom.example?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(text);
+}
+
+function prepareApplicationActions(prefix, subject, text, filename) {
+  const actions = document.getElementById(prefix + "-actions");
+  const email = document.getElementById(prefix + "-email");
+  const download = document.getElementById(prefix + "-download");
+  email.href = applicationMailLink(subject, text);
+  download.onclick = () => downloadApplication(text, filename);
+  actions.hidden = false;
+}
+
 const search = document.getElementById("pet-search");
 if (search) {
   let activeFilter = "all";
   const filterButtons = document.querySelectorAll("[data-filter]");
+  const age = document.getElementById("pet-age");
   function updateCatalog() {
     const query = search.value.trim().toLocaleLowerCase("ru");
     let count = 0;
     document.querySelectorAll("[data-pet-card]").forEach(card => {
       const matches = (activeFilter === "all" || card.dataset.type === activeFilter)
-        && card.dataset.name.includes(query);
+        && card.dataset.name.includes(query)
+        && (age.value === "all" || card.dataset.ageGroup === age.value);
       card.hidden = !matches;
       if (matches) count += 1;
     });
@@ -45,6 +60,14 @@ if (search) {
     updateCatalog();
   }));
   search.addEventListener("input", updateCatalog);
+  age.addEventListener("change", updateCatalog);
+  document.getElementById("reset-filters").addEventListener("click", () => {
+    activeFilter = "all";
+    search.value = "";
+    age.value = "all";
+    updateCatalog();
+    search.focus();
+  });
 }
 
 const detailPhoto = document.getElementById("detail-photo");
@@ -79,6 +102,26 @@ const adoptForm = document.getElementById("adopt-form");
 if (adoptForm) {
   const petId = new URLSearchParams(location.search).get("pet");
   if (shelterPets.some(pet => String(pet.id) === petId)) adoptForm.elements.pet.value = petId;
+  function updateSelectedPet() {
+    const pet = shelterPets.find(item => String(item.id) === adoptForm.elements.pet.value);
+    document.getElementById("application-pet").hidden = !pet;
+    if (!pet) return;
+    document.getElementById("application-pet-photo").src = "images/pet-" + pet.id + ".jpg";
+    document.getElementById("application-pet-photo").alt = pet.name;
+    document.getElementById("application-pet-name").textContent = pet.name;
+    document.getElementById("application-pet-age").textContent = pet.age + " · " + pet.sex;
+    document.getElementById("application-pet-health").textContent = pet.health;
+  }
+  adoptForm.elements.pet.addEventListener("change", () => {
+    updateSelectedPet();
+    document.getElementById("adopt-actions").hidden = true;
+    document.getElementById("adopt-result").hidden = true;
+  });
+  updateSelectedPet();
+  adoptForm.addEventListener("input", () => {
+    document.getElementById("adopt-actions").hidden = true;
+    document.getElementById("adopt-result").hidden = true;
+  });
   adoptForm.addEventListener("submit", event => {
     event.preventDefault();
     if (!adoptForm.reportValidity()) return;
@@ -90,11 +133,13 @@ if (adoptForm) {
       + "\nТелефон: +7 " + data.get("phone") + "\nПитомец: " + (pet ? pet.name : "Помогите выбрать")
       + "\nУсловия проживания: " + data.get("home") + "\nО себе: " + data.get("about")
       + "\nСовершеннолетие, согласие семьи и согласие на локальную обработку данных подтверждены.\n";
-    downloadApplication(text, "anketa-teply-dom.txt");
-    showMessage("adopt-result", "Анкета подготовлена для скачивания. Она не отправлена в приют. Данные не сохраняются на сервере.");
+    prepareApplicationActions("adopt", "Заявка на усыновление: " + (pet ? pet.name : "помогите выбрать питомца"), text, "anketa-teply-dom.txt");
+    showMessage("adopt-result", "Заявка подготовлена. Нажмите «Отправить заявку по почте» и подтвердите отправку в почтовой программе. Можно также скачать копию анкеты. До отправки письма приют не получает ваши данные.");
   });
   adoptForm.addEventListener("reset", () => {
     document.getElementById("adopt-result").hidden = true;
+    document.getElementById("adopt-actions").hidden = true;
+    setTimeout(updateSelectedPet, 0);
     adoptForm.querySelectorAll("input").forEach(input => input.setCustomValidity(""));
   });
 }
@@ -126,17 +171,23 @@ if (quickModal) {
     form.elements.pet.value = pet.name;
     document.getElementById("modal-pet-label").textContent = pet.name;
     document.getElementById("quick-result").hidden = true;
+    document.getElementById("quick-actions").hidden = true;
   });
   quickModal.addEventListener("shown.bs.modal", () => document.getElementById("quick-name").focus());
+  document.getElementById("quick-form").addEventListener("input", () => {
+    document.getElementById("quick-actions").hidden = true;
+    document.getElementById("quick-result").hidden = true;
+  });
   document.getElementById("quick-form").addEventListener("submit", event => {
     event.preventDefault();
     const form = event.currentTarget;
     if (!form.reportValidity()) return;
     const data = new FormData(form);
-    downloadApplication("ЗАЯВКА НА ЗНАКОМСТВО — ТЁПЛЫЙ ДОМ\nСкачанная заявка. Передайте её куратору приюта.\n\n"
+    const text = "ЗАЯВКА НА ЗНАКОМСТВО — ТЁПЛЫЙ ДОМ\nПередайте заявку куратору приюта.\n\n"
       + "Питомец: " + data.get("pet") + "\nИмя: " + data.get("name") + "\nТелефон: " + data.get("phone")
-      + "\nСовершеннолетие и согласие на локальную обработку данных подтверждены.\n", "znakomstvo-teply-dom.txt");
-    showMessage("quick-result", "Заявка подготовлена для скачивания. Она не отправлена в приют.");
+      + "\nСовершеннолетие и согласие на локальную обработку данных подтверждены.\n";
+    prepareApplicationActions("quick", "Знакомство с питомцем: " + data.get("pet"), text, "znakomstvo-teply-dom.txt");
+    showMessage("quick-result", "Заявка подготовлена. Откройте письмо кнопкой ниже и подтвердите отправку в почтовой программе. До этого приют не получает ваши данные.");
   });
 }
 
@@ -152,6 +203,7 @@ if (donation) {
       button.classList.toggle("btn-outline-primary", !active);
     });
     document.getElementById("donate-result").hidden = true;
+    document.getElementById("donate-email").hidden = true;
   }
   buttons.forEach(button => button.addEventListener("click", () => {
     amount.value = button.dataset.amount;
@@ -161,8 +213,11 @@ if (donation) {
   donation.addEventListener("submit", event => {
     event.preventDefault();
     if (!donation.reportValidity()) return;
-    showMessage("donate-result", "Спасибо за желание помочь на " + Number(amount.value).toLocaleString("ru-RU")
-      + " ₽. Для перевода свяжитесь с приютом и уточните реквизиты. Деньги не списаны.");
+    const formatted = Number(amount.value).toLocaleString("ru-RU");
+    const email = document.getElementById("donate-email");
+    email.href = applicationMailLink("Пожертвование приюту — " + formatted + " ₽", "Здравствуйте! Хочу помочь приюту пожертвованием на сумму " + formatted + " ₽. Пришлите, пожалуйста, актуальные реквизиты или ссылку для перевода.");
+    email.hidden = false;
+    showMessage("donate-result", "Вы выбрали пожертвование " + formatted + " ₽. Запросите реквизиты кнопкой ниже или позвоните в приют. Эта форма не списывает деньги.");
   });
 }
 
