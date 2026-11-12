@@ -41,8 +41,7 @@ h2 { font-weight: 700; } h3 { font-weight: 650; }
 .site-footer.bg-dark { background: #33483d !important; padding-bottom: 90px !important; }
 .site-footer a { text-underline-offset: 4px; }
 .back-top { position: fixed; bottom: 20px; right: 20px; z-index: 1020; }
-.news-surface { background: #f5f1f5; }
-.news-feature-image { width: 100%; height: 100%; min-height: 320px; max-height: 440px; object-fit: cover; }
+.about-surface { background: #f6f3ec; }
 [hidden] { display: none !important; }
 @media (max-width: 991.98px) { .hero-note { left: 15px; } .hero-image { height: 460px; } .navbar-nav { padding-top: 1rem; } }
 @media (max-width: 575.98px) { .hero-image { height: 370px; } .hero-sticker { right: 0; width: 95px; height: 95px; } .hero-note { left: 10px; right: 10px; bottom: 14px; transform: none; } .brand-caption { font-size: .48rem; } .pet-detail-image { height: 340px; } .back-top { bottom: 12px; right: 12px; font-size: .8rem; } .section-space { margin-top: 48px; margin-bottom: 48px; } .card-body { padding: 1.25rem; } }
@@ -57,7 +56,7 @@ html { scroll-padding-top: 155px; }
 .site-header .navbar-collapse { max-height: calc(100dvh - 125px); overflow-y: auto; }
 .scroll-top-button { width: 60px; height: 60px; display: inline-flex; align-items: center; justify-content: center; padding: 0; border: 1px solid #d1dccd; border-radius: 50%; background: #eef3e7; color: #466b57; box-shadow: 0 5px 20px #34483d20 !important; }
 .scroll-top-button:hover,.scroll-top-button:active { background: #e0ead8; color: #294633; border-color: #b5c6ae; }
-.scroll-top-button svg { transform: none; }
+.scroll-top-button svg { transform: rotate(-12deg); }
 @media (max-width: 575.98px) { html { scroll-padding-top: 150px; } .scroll-top-button { width: 54px; height: 54px; } }
 
 .brand-paw { display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; flex-shrink: 0; border: 1px solid #d1dccd; border-radius: 50%; background: #eef3e7; color: #466b57; }
@@ -69,7 +68,7 @@ html { scroll-padding-top: 155px; }
   @media (hover: hover) and (pointer: fine) {
     .btn:hover { transform: translateY(-2px); }
     .navbar-brand:hover .brand-paw { transform: scale(1.04); }
-    .scroll-top-button:hover svg { transform: translateY(-2px); }
+    .scroll-top-button:hover svg { transform: translateY(-2px) rotate(-12deg); }
   }
 }
 @keyframes welcome-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
@@ -78,3 +77,5 @@ html { scroll-padding-top: 155px; }
 .header-brandbar { background-color: #eef3f6 !important; } .header-brandbar .navbar-brand { margin: 0; } .header-brandbar .navbar-toggler { padding: .5rem; border: 1px solid #d1dccd; border-radius: .8rem; } .header-brandbar .navbar-toggler-icon { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='%23466b57' stroke-width='2' stroke-linecap='round' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E"); }
 
 .pet-facts dt { font-weight: 600; margin-top: .65rem; } .pet-facts dd { color: #687268; margin-bottom: .5rem; } .application-pet-photo { width: 88px; height: 96px; object-fit: cover; flex-shrink: 0; }
+
+.about-photo { height: 340px; object-fit: cover; }

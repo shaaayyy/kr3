@@ -59,7 +59,7 @@ for page in pages.values():
         elif parts.fragment and target.suffix == '.html':
             if parts.fragment not in pages[target.name].ids: errors.append(f'{page.path.name}: нет якоря {link}')
 
-required = {'index.html','catalog.html','product.html','order.html','help.html','news.html'}
+required = {'index.html','catalog.html','product.html','order.html','help.html','about.html'}
 if set(pages) != required: errors.append('Неверный набор страниц')
 if errors:
     print('\n'.join(errors))
