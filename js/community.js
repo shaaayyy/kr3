@@ -69,6 +69,46 @@
     document.dispatchEvent(new Event("favorites-changed"));
   });
 
+  const secondPhoto = document.getElementById("detail-photo-second");
+  if (secondPhoto) {
+    const petId = Number(new URL(document.getElementById("adopt-link").href).searchParams.get("pet"));
+    const pet = shelterPets.find(item => item.id === petId);
+    secondPhoto.src = "images/pet-" + petId + "-2.png";
+    const firstPhoto = document.getElementById("detail-photo");
+    const stage = document.querySelector(".detail-photo-stage");
+    document.querySelectorAll("[data-gallery-index]").forEach(button => button.addEventListener("click", () => {
+      const isSecond = button.dataset.galleryIndex === "1";
+      stage.classList.toggle("show-second", isSecond);
+      firstPhoto.setAttribute("aria-hidden", String(isSecond));
+      secondPhoto.setAttribute("aria-hidden", String(!isSecond));
+      secondPhoto.alt = isSecond ? pet.name + " — второй кадр, сгенерированная иллюстрация" : "";
+      document.querySelectorAll("[data-gallery-index]").forEach(choice => {
+        const selected = choice === button;
+        choice.classList.toggle("active", selected); choice.setAttribute("aria-pressed", String(selected));
+      });
+    }));
+  }
+
+  const ageControl = document.getElementById("pet-age");
+  if (ageControl) {
+    function syncAgePicker() {
+      document.querySelectorAll("[data-age-value]").forEach(button => {
+        const active = button.dataset.ageValue === ageControl.value;
+        button.classList.toggle("active", active);
+        button.setAttribute("aria-pressed", String(active));
+        if (active) document.getElementById("age-selected-label").textContent = button.querySelector("strong").textContent;
+      });
+    }
+    document.querySelectorAll("[data-age-value]").forEach(button => button.addEventListener("click", () => {
+      ageControl.value = button.dataset.ageValue;
+      ageControl.dispatchEvent(new Event("change", {bubbles: true}));
+      document.getElementById("pet-age-trigger").focus();
+    }));
+    ageControl.addEventListener("change", syncAgePicker);
+    document.getElementById("reset-filters").addEventListener("click", syncAgePicker);
+    syncAgePicker();
+  }
+
   const normalize = value => value.toLocaleLowerCase("ru").replaceAll("ё", "е");
   const query = document.getElementById("site-query");
   const results = document.getElementById("site-search-results");
@@ -135,17 +175,33 @@
   document.querySelectorAll("[data-chat-question]").forEach(button => button.addEventListener("click", () => sendChat(button.dataset.chatQuestion)));
   const chatWidget = document.getElementById("chat-widget");
   const chatToggle = document.getElementById("chat-toggle");
+  let chatOpen = false;
+  let chatExit = null;
   function toggleChat(open) {
-    chatWidget.hidden = !open;
+    chatOpen = open;
+    if (chatExit) { chatExit.cancel(); chatExit = null; }
     chatToggle.setAttribute("aria-expanded", String(open));
     chatToggle.setAttribute("aria-label", open ? "Свернуть чат с консультантом" : "Открыть чат с консультантом");
+    chatWidget.inert = !open;
     if (open) {
+      chatWidget.hidden = false;
       toggleSearch(false);
       document.getElementById("chat-message").focus();
       chatLog.scrollTop = chatLog.scrollHeight;
-    } else chatToggle.focus();
+    } else {
+      chatToggle.focus();
+      if (!chatWidget.hidden && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        chatExit = chatWidget.animate([
+          { opacity: 1, transform: "translateY(0) scale(1)" },
+          { opacity: 0, transform: "translateY(12px) scale(.98)" }
+        ], { duration: 190, easing: "ease-in", fill: "forwards" });
+        chatExit.finished.then(() => {
+          if (!chatOpen) { chatWidget.hidden = true; chatExit.cancel(); chatExit = null; }
+        }).catch(() => {});
+      } else chatWidget.hidden = true;
+    }
   }
-  chatToggle.addEventListener("click", () => toggleChat(chatWidget.hidden));
+  chatToggle.addEventListener("click", () => toggleChat(!chatOpen));
   document.getElementById("chat-close").addEventListener("click", () => toggleChat(false));
   chatWidget.addEventListener("keydown", event => {
     if (event.key === "Escape") { event.preventDefault(); toggleChat(false); }

@@ -19,7 +19,7 @@ class Page(HTMLParser):
             if a['id'] in self.ids: errors.append(f'{self.path.name}: повтор id={a["id"]}')
             self.ids.add(a['id'])
         if tag == 'h1': self.h1 += 1
-        if tag == 'img' and not a.get('alt'): errors.append(f'{self.path.name}: нет alt изображения')
+        if tag == 'img' and ('alt' not in a or (not a['alt'] and a.get('aria-hidden') != 'true')): errors.append(f'{self.path.name}: нет alt изображения')
         if tag == 'label' and a.get('for'): self.labels.add(a['for'])
         if tag in {'input','select','textarea'} and a.get('type') != 'hidden': self.inputs.append(a)
         for key in ('href','src'):
