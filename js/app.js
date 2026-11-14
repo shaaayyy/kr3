@@ -34,6 +34,7 @@ function prepareApplicationActions(prefix, subject, text, filename) {
 const search = document.getElementById("pet-search");
 if (search) {
   let activeFilter = "all";
+  let favoritesOnly = false;
   const filterButtons = document.querySelectorAll("[data-filter]");
   const age = document.getElementById("pet-age");
   function updateCatalog() {
@@ -41,14 +42,23 @@ if (search) {
     let count = 0;
     document.querySelectorAll("[data-pet-card]").forEach(card => {
       const matches = (activeFilter === "all" || card.dataset.type === activeFilter)
-        && (!document.getElementById("favorite-filter")?.checked || window.shelterFavorites?.includes(Number(card.querySelector('a[href*="product.html?id="]')?.getAttribute("href").split("id=")[1])))
+        && (!favoritesOnly || window.shelterFavorites?.includes(Number(card.querySelector('a[href*="product.html?id="]')?.getAttribute("href").split("id=")[1])))
         && card.dataset.name.includes(query)
         && (age.value === "all" || card.dataset.ageGroup === age.value);
       card.hidden = !matches;
       if (matches) count += 1;
     });
     document.getElementById("pet-count").textContent = "Найдено питомцев: " + count;
-    document.getElementById("empty-catalog").hidden = count !== 0;
+    const empty = document.getElementById("empty-catalog");
+    empty.hidden = count !== 0;
+    if (count === 0) empty.textContent = favoritesOnly
+      ? "Нет избранных питомцев с такими параметрами. Добавьте друга сердечком во вкладке «Все животные» или сбросьте фильтры."
+      : "По вашему запросу питомцев не найдено. Попробуйте изменить поиск или сбросить фильтры.";
+    const focused = document.activeElement;
+    if (focused?.closest("[data-pet-card]")?.hidden) {
+      const next = [...document.querySelectorAll("[data-pet-card]")].find(card => !card.hidden);
+      (next?.querySelector("[data-favorite]") || document.getElementById("catalog-favorites-tab")).focus();
+    }
     filterButtons.forEach(button => {
       const active = button.dataset.filter === activeFilter;
       button.setAttribute("aria-pressed", String(active));
@@ -61,12 +71,20 @@ if (search) {
     updateCatalog();
   }));
   search.addEventListener("input", updateCatalog);
-  document.getElementById("favorite-filter")?.addEventListener("change", updateCatalog);
+  document.querySelectorAll("[data-catalog-view]").forEach(button => button.addEventListener("click", () => {
+    favoritesOnly = button.dataset.catalogView === "favorites";
+    document.querySelectorAll("[data-catalog-view]").forEach(tab => {
+      const selected = tab === button;
+      tab.setAttribute("aria-selected", String(selected)); tab.classList.toggle("active", selected);
+    });
+    document.getElementById("pet-grid").setAttribute("aria-labelledby", button.id);
+    updateCatalog();
+  }));
   document.addEventListener("favorites-changed", updateCatalog);
   age.addEventListener("change", updateCatalog);
   document.getElementById("reset-filters").addEventListener("click", () => {
     activeFilter = "all";
-    document.getElementById("favorite-filter").checked = false;
+
     search.value = "";
     age.value = "all";
     updateCatalog();

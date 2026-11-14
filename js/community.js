@@ -10,6 +10,8 @@
   window.shelterFavorites = Array.isArray(saved) ? saved.filter(id => shelterPets.some(pet => pet.id === id)) : [];
   const heart = '<svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M20.8 4.6c-2.1-2.1-5.5-1.9-7.5.2L12 6.1l-1.3-1.3c-2-2.1-5.4-2.3-7.5-.2-2.2 2.2-2.2 5.6 0 7.8L12 21l8.8-8.6c2.2-2.2 2.2-5.6 0-7.8Z"/></svg>';
   function refreshHearts() {
+    const count = document.getElementById("favorites-count");
+    if (count) count.textContent = String(window.shelterFavorites.length);
     document.querySelectorAll("[data-favorite]").forEach(button => {
       const active = window.shelterFavorites.includes(Number(button.dataset.favorite));
       const pet = shelterPets.find(p => p.id === Number(button.dataset.favorite));
@@ -34,8 +36,14 @@
       }
       window.shelterFavorites = next;
       refreshHearts();
+      if (!active && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        button.querySelector("svg").animate([
+          { transform: "scale(1)" }, { transform: "scale(1.4) rotate(-10deg)", offset: .4 },
+          { transform: "scale(.9) rotate(5deg)", offset: .75 }, { transform: "scale(1)" }
+        ], { duration: 430, easing: "ease-out" });
+      }
       document.dispatchEvent(new Event("favorites-changed"));
-      document.getElementById("favorite-status").textContent = active ? "Питомец убран из избранного." : "Питомец добавлен в избранное. Найти его можно в каталоге с фильтром «Только избранные».";
+      document.getElementById("favorite-status").textContent = active ? "Питомец убран из избранного." : "Питомец добавлен в избранное. Найти его можно в каталоге во вкладке «Избранное».";
     });
     return button;
   }
@@ -145,36 +153,65 @@
 
   const form = document.getElementById("review-form");
   if (form) {
+    const paw = '<svg viewBox="0 0 48 48" width="27" height="27" fill="currentColor" aria-hidden="true"><ellipse cx="12" cy="18" rx="5" ry="7" transform="rotate(-25 12 18)"/><ellipse cx="23" cy="11" rx="5" ry="7"/><ellipse cx="34" cy="14" rx="5" ry="7" transform="rotate(18 34 14)"/><ellipse cx="40" cy="25" rx="4.5" ry="6"/><path d="M12 35c0-5 4-7 7-12 3-4 7-4 10 0 4 5 8 7 8 12 0 7-8 5-12 4-5-1-13 3-13-4Z"/></svg>';
+    const examples = [
+      {name: "Анна", rating: 5, text: "Понравилось, что о каждом питомце подробно рассказывают: и о привычках, и о том, какая семья ему подойдёт."},
+      {name: "Михаил", rating: 5, text: "Здорово, что можно помочь не только деньгами. Прогулки, корм и внимание тоже нужны тем, кто ждёт своего человека."},
+      {name: "Елена", rating: 4, text: "Удобно заранее посмотреть животных и узнать условия знакомства. Хотелось бы видеть ещё больше фотографий питомцев."}
+    ];
     const stored = read("shelter-reviews", []);
     let reviews = Array.isArray(stored) ? stored.filter(r => r && typeof r.name === "string" && typeof r.text === "string" && Number.isInteger(r.rating) && r.rating >= 1 && r.rating <= 5 && Number.isFinite(r.date)).slice(0, 30) : [];
+    const radios = [...form.querySelectorAll('[name="rating"]')];
+    function updateRating() {
+      const value = Number(form.querySelector('[name="rating"]:checked')?.value || 0);
+      radios.forEach(radio => radio.nextElementSibling.classList.toggle("selected", Number(radio.value) <= value));
+      document.getElementById("rating-caption").textContent = value ? value + " из 5 лапок" : "Выберите от 1 до 5 лапок";
+    }
+    radios.forEach(radio => radio.addEventListener("change", updateRating));
     function renderReviews() {
       const list = document.getElementById("review-list"); list.replaceChildren();
-      if (!reviews.length) { const empty = document.createElement("p"); empty.className = "small text-body-secondary"; empty.textContent = "Здесь появятся ваши сохранённые отзывы."; list.append(empty); }
-      reviews.forEach((review, index) => {
-        const article = document.createElement("article"); article.className = "review-card";
-        const heading = document.createElement("h3"); heading.className = "h6"; heading.textContent = review.name;
-        const meta = document.createElement("p"); meta.className = "small text-success"; meta.textContent = "★".repeat(review.rating) + " · " + new Date(review.date).toLocaleDateString("ru-RU"); meta.setAttribute("aria-label", "Оценка " + review.rating + " из 5. " + new Date(review.date).toLocaleDateString("ru-RU"));
-        const text = document.createElement("p"); text.className = "review-text"; text.textContent = review.text;
-        const remove = document.createElement("button"); remove.type = "button"; remove.className = "btn btn-sm btn-outline-secondary"; remove.textContent = "Удалить мой отзыв";
-        remove.addEventListener("click", () => {
-          const next = reviews.filter((_, i) => i !== index);
-          if (!save("shelter-reviews", next)) { document.getElementById("review-status").textContent = "Не удалось удалить отзыв из хранилища браузера."; return; }
-          reviews = next; renderReviews(); document.getElementById("review-name").focus();
-          document.getElementById("review-status").textContent = "Отзыв удалён.";
-        });
-        article.append(heading, meta, text, remove); list.append(article);
+      [...reviews.map((r, index) => ({...r, local: true, index})), ...examples].forEach(review => {
+        const column = document.createElement("div"); column.className = "col-12 col-md-6 col-xl-4";
+        const article = document.createElement("article"); article.className = "review-card h-100 d-flex flex-column";
+        const head = document.createElement("div"); head.className = "d-flex align-items-center gap-3 mb-3";
+        const avatar = document.createElement("span"); avatar.className = "review-avatar"; avatar.textContent = review.name.slice(0, 1).toLocaleUpperCase("ru"); avatar.setAttribute("aria-hidden", "true");
+        const identity = document.createElement("div");
+        const title = document.createElement("h3"); title.className = "h6 mb-1"; title.textContent = review.name;
+        const meta = document.createElement("p"); meta.className = "small text-body-secondary mb-0"; meta.textContent = review.local ? "Ваш отзыв · " + new Date(review.date).toLocaleDateString("ru-RU") : "Пример отзыва";
+        identity.append(title, meta); head.append(avatar, identity);
+        const rating = document.createElement("div"); rating.className = "review-paws mb-3"; rating.setAttribute("role", "img"); rating.setAttribute("aria-label", "Оценка: " + review.rating + " из 5 лапок");
+        for (let i = 1; i <= 5; i++) {
+          const item = document.createElement("span"); item.className = i <= review.rating ? "filled" : ""; item.innerHTML = paw; rating.append(item);
+        }
+        const text = document.createElement("p"); text.className = "review-text flex-grow-1"; text.textContent = review.text;
+        article.append(head, rating, text);
+        if (review.local) {
+          const remove = document.createElement("button"); remove.type = "button"; remove.className = "btn btn-sm btn-outline-secondary align-self-start"; remove.textContent = "Удалить мой отзыв";
+          remove.addEventListener("click", () => {
+            const next = reviews.filter((_, i) => i !== review.index);
+            if (!save("shelter-reviews", next)) { document.getElementById("review-status").textContent = "Не удалось удалить отзыв."; return; }
+            reviews = next; renderReviews(); document.querySelector('[data-bs-target="#review-modal"]').focus();
+            document.getElementById("review-status").textContent = "Отзыв удалён.";
+          });
+          article.append(remove);
+        }
+        column.append(article); list.append(column);
       });
     }
     form.addEventListener("submit", event => {
       event.preventDefault(); if (!form.reportValidity()) return;
       const name = document.getElementById("review-name").value.trim(); const text = document.getElementById("review-text").value.trim();
-      const status = document.getElementById("review-status");
+      const status = document.getElementById("review-form-status");
       if (!name || text.length < 10) { status.textContent = "Укажите имя и напишите не менее 10 символов, кроме пробелов."; return; }
       if (reviews.length >= 30) { status.textContent = "Сохранено 30 отзывов. Удалите один из старых, чтобы добавить новый."; return; }
-      const next = [{ name, text, rating: Number(document.getElementById("review-rating").value), date: Date.now() }, ...reviews];
-      if (!save("shelter-reviews", next)) { status.textContent = "Не удалось сохранить отзыв. Проверьте доступность хранилища браузера."; return; }
-      reviews = next; form.reset(); renderReviews(); status.textContent = "Спасибо! Отзыв сохранён в этом браузере.";
+      const next = [{name, text, rating: Number(form.querySelector('[name="rating"]:checked').value), date: Date.now()}, ...reviews];
+      if (!save("shelter-reviews", next)) { status.textContent = "Не удалось сохранить отзыв. Проверьте хранилище браузера."; return; }
+      reviews = next; form.reset(); updateRating(); renderReviews(); status.textContent = "";
+      document.getElementById("review-status").textContent = "Спасибо! Ваш отзыв добавлен и сохранён в этом браузере.";
+      bootstrap.Modal.getOrCreateInstance(document.getElementById("review-modal")).hide();
     });
+    document.getElementById("review-modal").addEventListener("shown.bs.modal", () => document.getElementById("review-name").focus());
     renderReviews();
   }
+  document.dispatchEvent(new Event("favorites-changed"));
 })();
