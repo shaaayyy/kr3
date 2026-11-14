@@ -41,6 +41,7 @@ if (search) {
     let count = 0;
     document.querySelectorAll("[data-pet-card]").forEach(card => {
       const matches = (activeFilter === "all" || card.dataset.type === activeFilter)
+        && (!document.getElementById("favorite-filter")?.checked || window.shelterFavorites?.includes(Number(card.querySelector('a[href*="product.html?id="]')?.getAttribute("href").split("id=")[1])))
         && card.dataset.name.includes(query)
         && (age.value === "all" || card.dataset.ageGroup === age.value);
       card.hidden = !matches;
@@ -60,9 +61,12 @@ if (search) {
     updateCatalog();
   }));
   search.addEventListener("input", updateCatalog);
+  document.getElementById("favorite-filter")?.addEventListener("change", updateCatalog);
+  document.addEventListener("favorites-changed", updateCatalog);
   age.addEventListener("change", updateCatalog);
   document.getElementById("reset-filters").addEventListener("click", () => {
     activeFilter = "all";
+    document.getElementById("favorite-filter").checked = false;
     search.value = "";
     age.value = "all";
     updateCatalog();

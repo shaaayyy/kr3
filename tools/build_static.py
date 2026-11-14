@@ -1,6 +1,8 @@
 """Подготовка статических файлов для Sites; npm не требуется."""
 from pathlib import Path
 import shutil
+from build_search import build_search
+build_search()
 root = Path(__file__).resolve().parents[1]
 out = root / 'dist'
 # Каталог dist генерируется из исходников, пользовательские данные в нём не хранятся.

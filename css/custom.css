@@ -79,3 +79,27 @@ html { scroll-padding-top: 155px; }
 .pet-facts dt { font-weight: 600; margin-top: .65rem; } .pet-facts dd { color: #687268; margin-bottom: .5rem; } .application-pet-photo { width: 88px; height: 96px; object-fit: cover; flex-shrink: 0; }
 
 .about-photo { height: 340px; object-fit: cover; }
+
+/* Навигация, обратная связь и небольшие интерактивные детали. */
+.footer-contacts { font-style: normal; }
+.footer-contacts a,.footer-contacts p { display: flex; align-items: flex-start; gap: .75rem; margin: 0 0 1rem; color: #f4f6ef; overflow-wrap: anywhere; }
+.contact-icon { width: 21px; height: 21px; flex: 0 0 21px; margin-top: 2px; color: #c4dbb7; }
+.pet-card { position: relative; }
+.favorite-button { position: absolute; top: 14px; right: 14px; width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid #e6ded7; border-radius: 50%; background: #fffdf9; color: #865b63; box-shadow: 0 3px 12px #33483d14; }
+.favorite-button.is-favorite { background: #fbe9ea; color: #a83f57; border-color: #e3a5b2; }
+.favorite-button.is-favorite svg { fill: currentColor; }
+.favorite-detail { position: static; flex-shrink: 0; align-self: center; }
+.favorite-button:focus-visible,.search-result:focus-visible { outline: 3px solid #3b7750; outline-offset: 3px; }
+.chat-launch { position: fixed; bottom: 24px; left: 24px; z-index: 1020; border-radius: 30px; box-shadow: 0 5px 20px #33483d26; }
+.chat-log { max-height: 280px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding: 4px; }
+.chat-bubble { align-self: flex-start; background: #eef3e7; border-radius: 16px 16px 16px 3px; padding: 12px 16px; margin: 0; font-size: .9rem; max-width: 94%; overflow-wrap: anywhere; }
+.chat-user { align-self: flex-end; background: #f2eade; border-radius: 16px 16px 3px 16px; }
+.search-result { display: flex; flex-direction: column; gap: 5px; padding: 15px; border: 1px solid #dfe4d6; border-radius: 12px; color: #33483d; text-decoration: none; }
+.search-result span { font-size: .85rem; color: #687268; }
+.review-card { padding: 22px; background: #fffdf9; border: 1px solid #e2e6db; border-radius: 18px; }
+.review-text { white-space: pre-wrap; overflow-wrap: anywhere; }
+@media (prefers-reduced-motion: no-preference) {
+ .favorite-button,.search-result,.site-footer a { transition: transform .2s, background-color .2s, color .2s; }
+ @media (hover: hover) { .favorite-button:hover { transform: scale(1.08); background: #fbe9ea; } .search-result:hover { background: #eef3e7; transform: translateX(3px); } .site-footer a:hover { color: #d2eac5; transform: translateX(2px); } }
+}
+@media (max-width: 575.98px) { .chat-launch { left: 12px; bottom: 16px; max-width: calc(100% - 90px); font-size: .78rem; padding: .7rem 1rem; } }
