@@ -103,3 +103,36 @@ html { scroll-padding-top: 155px; }
  @media (hover: hover) { .favorite-button:hover { transform: scale(1.08); background: #fbe9ea; } .search-result:hover { background: #eef3e7; transform: translateX(3px); } .site-footer a:hover { color: #d2eac5; transform: translateX(2px); } }
 }
 @media (max-width: 575.98px) { .chat-launch { left: 12px; bottom: 16px; max-width: calc(100% - 90px); font-size: .78rem; padding: .7rem 1rem; } }
+
+/* Поиск встроен в шапку; чат не перекрывает страницу затемнением. */
+.header-search { position: relative; width: 460px; max-width: 520px; min-width: 200px; flex: 1 1 460px; margin: 0 24px 0 0; }
+.header-search-field { position: relative; }
+.header-search-field > svg { position: absolute; top: 50%; left: 15px; transform: translateY(-50%); color: #687268; pointer-events: none; }
+.header-search-field .form-control { padding: .65rem 1rem .65rem 2.6rem; font-size: .86rem; border-radius: 24px; background: #fafbf7; }
+.header-search-panel { position: absolute; top: calc(100% + 12px); left: 0; z-index: 1040; width: max(100%, 400px); max-width: calc(100vw - 32px); max-height: min(440px, 65dvh); overflow-y: auto; border: 1px solid #dce4d6; border-radius: 18px; padding: 16px; background: #fffefa; box-shadow: 0 12px 36px #33483d22; }
+.header-search-panel .search-result { padding: 12px; }
+.support-widget { position: fixed; bottom: 92px; left: 24px; z-index: 1045; width: 380px; max-width: calc(100vw - 32px); max-height: calc(100dvh - 115px); display: flex; flex-direction: column; overflow: hidden; border: 1px solid #dce4d6; border-radius: 22px; background: #fffefa; box-shadow: 0 12px 48px #243e322e; }
+.support-widget-header { display: flex; align-items: center; gap: 12px; padding: 20px; color: white; background: #466b57; flex-shrink: 0; }
+.support-widget-header p { color: #e2ebde; font-size: .75rem; }
+.support-avatar { width: 40px; height: 40px; display: inline-flex; align-items: center; justify-content: center; border-radius: 14px; font-size: .8rem; font-weight: 700; background: #ffffff20; flex-shrink: 0; }
+.support-close { margin-left: auto; border: 0; border-radius: 50%; color: white; background: #ffffff15; width: 36px; height: 36px; font-size: 26px; line-height: 1; flex-shrink: 0; }
+.support-close:hover { background: #ffffff30; }
+.support-close:focus-visible { outline: 3px solid #dfebce; outline-offset: 2px; }
+.support-widget-body { display: flex; flex-direction: column; padding: 16px; min-height: 0; overflow-y: auto; }
+.chat-notice { font-size: .73rem; line-height: 1.5; color: #687268; margin-bottom: 12px; }
+.support-widget .chat-log { height: 235px; min-height: 100px; flex: 1 1 auto; }
+.support-widget .chat-bubble { font-size: .82rem; }
+.support-widget .form-control { font-size: .85rem; min-width: 0; }
+.support-widget .input-group > .btn { padding: .65rem .85rem; font-size: .8rem; }
+.support-widget .form-label { font-size: .78rem; }
+.support-widget-body > a { font-size: .73rem !important; }
+.chat-launch { display: inline-flex; align-items: center; gap: 8px; }
+@media (min-width: 992px) { .site-header .navbar-collapse { overflow: visible; } .site-header .navbar-nav { gap: .5rem !important; } .site-header .nav-link { white-space: nowrap; } }
+@media (max-width: 991.98px) { .header-search { width: 100%; max-width: none; min-width: 0; flex: 1 0 100%; margin: 3px 0; } .header-search-panel { width: 100%; max-width: 100%; } .site-header .navbar-collapse { flex-basis: 100%; } }
+@media (max-width: 575.98px) { .support-widget { left: 12px; bottom: 78px; width: calc(100vw - 24px); max-width: none; max-height: calc(100dvh - 96px); border-radius: 18px; } .support-widget-header { padding: 14px 16px; } .support-widget .chat-log { height: 180px; } html { scroll-padding-top: 190px; } }
+.support-widget { height: 480px; }
+.support-widget-header { padding: 16px; }
+.support-widget-body { flex: 1 1 auto; }
+.support-widget [data-chat-question] { padding: .4rem .65rem; font-size: .72rem; }
+.support-widget .chat-log { height: auto; }
+@media (max-width: 575.98px) { .support-widget { height: 460px; } }

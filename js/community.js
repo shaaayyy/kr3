@@ -80,8 +80,30 @@
       link.append(title, description); results.append(link);
     });
   }
-  query.addEventListener("input", searchSite);
-  document.getElementById("site-search-modal").addEventListener("shown.bs.modal", () => { searchSite(); query.focus(); });
+  const searchForm = document.getElementById("site-search-form");
+  const searchPanel = document.getElementById("site-search-panel");
+  function toggleSearch(open) {
+    searchPanel.hidden = !open;
+    query.setAttribute("aria-expanded", String(open));
+  }
+  query.addEventListener("input", () => { searchSite(); toggleSearch(true); });
+  query.addEventListener("focus", () => { searchSite(); toggleSearch(true); });
+  searchForm.addEventListener("submit", event => {
+    event.preventDefault(); searchSite(); toggleSearch(true);
+    results.querySelector("a")?.focus();
+  });
+  searchForm.addEventListener("keydown", event => {
+    if (event.key === "Escape") { query.focus(); toggleSearch(false); }
+    if (event.key === "ArrowDown" && event.target === query) {
+      event.preventDefault(); searchSite(); toggleSearch(true); results.querySelector("a")?.focus();
+    }
+  });
+  document.addEventListener("pointerdown", event => {
+    if (!searchForm.contains(event.target)) toggleSearch(false);
+  });
+  searchForm.addEventListener("focusout", event => {
+    if (!searchForm.contains(event.relatedTarget)) toggleSearch(false);
+  });
 
   const chatLog = document.getElementById("chat-log");
   function answer(text) {
@@ -97,13 +119,29 @@
     if (chatLog.children.length > 60) chatLog.replaceChildren();
     const message = document.createElement("p"); message.className = "chat-bubble chat-user"; message.textContent = "Вы: " + text;
     const reply = document.createElement("p"); reply.className = "chat-bubble"; reply.textContent = "Помощник: " + answer(text);
-    chatLog.append(message, reply); reply.scrollIntoView({ block: "nearest" });
+    chatLog.append(message, reply); chatLog.scrollTop = chatLog.scrollHeight;
   }
   document.getElementById("chat-form").addEventListener("submit", event => {
     event.preventDefault(); const input = document.getElementById("chat-message"); sendChat(input.value); input.value = ""; input.focus();
   });
   document.querySelectorAll("[data-chat-question]").forEach(button => button.addEventListener("click", () => sendChat(button.dataset.chatQuestion)));
-  document.getElementById("consultant-modal").addEventListener("shown.bs.modal", () => document.getElementById("chat-message").focus());
+  const chatWidget = document.getElementById("chat-widget");
+  const chatToggle = document.getElementById("chat-toggle");
+  function toggleChat(open) {
+    chatWidget.hidden = !open;
+    chatToggle.setAttribute("aria-expanded", String(open));
+    chatToggle.setAttribute("aria-label", open ? "Свернуть чат с консультантом" : "Открыть чат с консультантом");
+    if (open) {
+      toggleSearch(false);
+      document.getElementById("chat-message").focus();
+      chatLog.scrollTop = chatLog.scrollHeight;
+    } else chatToggle.focus();
+  }
+  chatToggle.addEventListener("click", () => toggleChat(chatWidget.hidden));
+  document.getElementById("chat-close").addEventListener("click", () => toggleChat(false));
+  chatWidget.addEventListener("keydown", event => {
+    if (event.key === "Escape") { event.preventDefault(); toggleChat(false); }
+  });
 
   const form = document.getElementById("review-form");
   if (form) {
